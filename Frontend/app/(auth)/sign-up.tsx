@@ -52,7 +52,7 @@ export default function SignUpScreen() {
       } else {
         console.error(JSON.stringify(completeSignUp, null, 2));
       }
-    } catch (err: any) {
+    } catch (err: any) {  
       console.error(JSON.stringify(err, null, 2));
     }
   };

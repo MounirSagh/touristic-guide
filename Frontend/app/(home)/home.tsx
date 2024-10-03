@@ -2,9 +2,11 @@ import { SignedIn, useUser } from '@clerk/clerk-expo';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, ImageBackground } from 'react-native';
 import { MaterialIcons, FontAwesome, Octicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 export default function Page() {
   const { user } = useUser();
+  const route = useRouter()
 
   return (
     <View style={styles.container}>
@@ -37,6 +39,14 @@ export default function Page() {
                 <Octicons name="upload" size={24} color="white" />
               </View>
             </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.uploadButton} 
+              onPress={() => route.replace('/(home)/monument')} // Navigate to home page
+            >
+              <Text>Upload Another Monument</Text>
+            </TouchableOpacity>
+
 
           </View>
         </ImageBackground>
