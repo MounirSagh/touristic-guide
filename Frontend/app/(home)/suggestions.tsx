@@ -1,71 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import axios from 'axios';
+
+// Define the type for the monument information
+type MonumentInfo = {
+  name: string;
+  longitude: string;
+  latitude: string;
+};
+
+// Update state to hold an array of monuments
 export default function App() {
-    const router=useRouter()
+  const router = useRouter();
+  const { city } = useLocalSearchParams();
+  console.log(city)
+  const { name } = useLocalSearchParams();
+  console.log(name)
+
+  // Initialize monumentInfo as an array
+  const [monumentInfo, setMonumentInfo] = useState<MonumentInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchMonumentInfo = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/monument/getsuggestions`, {
+          params: { Monument_city: city },
+        });
+        setMonumentInfo(response.data); // Set the fetched data to the state
+      } catch (err) {
+        setError('Failed to fetch monument information.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMonumentInfo();
+  }, [city]);
+
   return (
     <View style={styles.container}>
       <MapView style={styles.map}>
-        <Marker
-          description="Mosque Hassan 2"
-          coordinate={{ latitude: 33.608635, longitude: -7.632555 }}  // Corrected coordinates object
-        />
+        {/* Render markers for each monument */}
+        {monumentInfo.map((monument) => (
+          <Marker
+            key={monument.name} // Use unique key for each marker
+            description={monument.name} // Description on marker
+            coordinate={{
+              latitude: parseFloat(monument.latitude), // Convert latitude to number
+              longitude: parseFloat(monument.longitude), // Convert longitude to number
+            }}
+          />
+        ))}
       </MapView>
-      <View style={{
-    position: "absolute", 
-    bottom: 0, 
-    left: 0, 
-    width: '100%', 
-    paddingHorizontal: 60, 
-    paddingVertical: 20, 
-    display: 'flex', 
-    flexDirection: 'row',  // Arrange items in a row
-    alignItems: 'center', 
-    justifyContent: 'space-between'  // Distribute buttons evenly
-}}>
-    <TouchableOpacity style={{
-        width: "45%",  // Make each button take half the available space
-        backgroundColor: 'yellow', 
-        borderRadius: 100, 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        paddingVertical: 15
-    }}
-    onPress={() => router.replace('/(home)/monument')}  // Navigate to home page
-    >
-        <Text style={{
-            width: '100%', 
-            textAlign: "center", 
-            color: "black", 
-            fontSize: 16
-        }}>
-           Back
-        </Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity style={{
-        width: "45%",  // Same width as the other button
-        backgroundColor: 'black', 
-        borderRadius: 100, 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        paddingVertical: 15
-    }}
-    onPress={() => router.replace('/(home)/monument')}  // Navigate to home page
-    >
-        <Text style={{
-            width: '100%', 
-            textAlign: "center", 
-            color: "yellow", 
-            fontSize: 16
-        }}>
-            Learn More
-        </Text>
-    </TouchableOpacity>
-</View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.replace({
+            pathname: '/(home)/monumentfaker',
+            params: {name: name}, // Pass city as parameter
+          })}
+        >
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -73,24 +74,44 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
-    backgroundColor: 'white'
+    position: 'relative',
+    backgroundColor: 'white',
   },
   map: {
     width: '100%',
     height: '100%',
   },
-  uploadButton: {
-    marginTop: 30,
-    backgroundColor: 'yellow',
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    borderRadius: 10,
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+
+    width: '100%',
+    paddingHorizontal: 60,
+    paddingVertical: 20,
+    flexDirection: 'row',
     alignItems: 'center',
-  },  
-  uploadButtonText: {
+    justifyContent: 'center',
+  },
+  backButton: {
+    width: '45%',
+    backgroundColor: 'yellow',
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
+  },
+  learnButton: {
+    width: '45%',
+    backgroundColor: 'black',
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
+  },
+  buttonText: {
+    width: '100%',
+    textAlign: 'center',
     color: 'black',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });

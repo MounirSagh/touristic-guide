@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { SignedIn, useUser } from '@clerk/clerk-expo';
-import { router, useRouter } from 'expo-router';
+import { router, useRouter, useLocalSearchParams } from 'expo-router';
 import axios from 'axios';
 
 // Define the type for the monument information
@@ -14,7 +14,7 @@ type MonumentInfo = {
 function Page() {
   const { user } = useUser();
   const route = useRouter(); 
-  const monument = 'Bahia Palace';
+  const {name} = useLocalSearchParams();;
 
   // Initialize monumentInfo as an object with default values
   const [monumentInfo, setMonumentInfo] = useState<MonumentInfo>({
@@ -29,7 +29,7 @@ function Page() {
     const fetchMonumentInfo = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/api/monument/getmonumentinfo`, {
-          params: { monument_name: monument },
+          params: { monument_name: name },
         });
         setMonumentInfo(response.data);
       } catch (err) {
