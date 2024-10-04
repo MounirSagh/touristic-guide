@@ -24,12 +24,22 @@ function Page() {
           </Text>
 
           {/* Upload Another Monument Button */}
-          <TouchableOpacity 
-            style={styles.uploadButton} 
-            onPress={() => router.replace('/(home)/home')} // Navigate to home page
+          <View>
+            <TouchableOpacity 
+              style={styles.uploadButton} 
+              onPress={() => router.replace('/(home)/home')} // Navigate to home page
+            >
+              <Text style={styles.uploadButtonText}>Upload Another Monument</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+            style={styles.uploadButton2} 
+            onPress={() => router.replace('/(home)/suggestions')} // Navigate to home page
           >
-            <Text style={styles.uploadButtonText}>Upload Another Monument</Text>
+            <Text style={styles.uploadButtonText2}>See Nearby Monuments</Text>
           </TouchableOpacity>
+          </View>
+          
         </View>
       </SignedIn>
     </View>
@@ -77,9 +87,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     borderRadius: 10,
     alignItems: 'center',
+  },  
+  uploadButton2: {
+    marginTop: 30,
+    backgroundColor: 'black',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    alignItems: 'center',
   },
   uploadButtonText: {
     color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  uploadButtonText2: {
+    color: 'yellow',
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -18,7 +18,9 @@ model Monument {
   id                  String          @id @default(cuid())
   name                String          @unique
   image               String          
-  location            String
+  city                String
+  longitude           String
+  latitude            String
   description         String 
   createdAt           DateTime        @default(now())
 }

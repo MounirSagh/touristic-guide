@@ -5,6 +5,8 @@ export default function Layout() {
     <Stack>
       <Stack.Screen name='home' options={{title: 'Home', headerShown: false}}/>
       <Stack.Screen name='monument' options={{title: 'Monument', headerShown: false}}/>
+      <Stack.Screen name='suggestions' options={{title: 'Suggestions', headerShown: true, headerBackButtonMenuEnabled: true, headerBackVisible: true, headerBackTitle: "previous", headerBackTitleVisible: true,
+      }}/>
     </Stack>
   )
 }
